@@ -8,9 +8,11 @@ import { configService } from './services/config/config.service';
 import { CourseController } from './course/course.controller';
 import { CourseService } from './course/course.service';
 import { Course } from './entities/course.entity';
+import { CourseDto } from './Dtos/course-dto';
+import { User } from './entities/user.entity';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forRoot(configService.getTypeOrmConfig()), TypeOrmModule.forFeature([Course])],
+  imports: [AuthModule, TypeOrmModule.forRoot(configService.getTypeOrmConfig()), TypeOrmModule.forFeature([Course, User])],
   controllers: [AppController, AuthController, CourseController],
   providers: [AppService, CourseService],
 })
