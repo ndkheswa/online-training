@@ -15,7 +15,4 @@ export class Course {
 
     @Column()
     status: string;
-
-    @ManyToMany(() => User, user => user.courses)
-    users: User[];
 }

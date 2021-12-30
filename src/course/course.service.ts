@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 import { CourseDto } from 'src/Dtos/course-dto';
+import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -9,7 +11,7 @@ import { Repository } from 'typeorm';
 export class CourseService {
     
     constructor(@InjectRepository(Course) private readonly courseRepo: Repository<Course>, 
-        @InjectRepository(User) private readonly userRepo: Repository<User>) {}
+        @InjectRepository(User) private readonly userRepo: Repository<User>, private authService: AuthService) {}
 
     public async getAll(): Promise<CourseDto[]> {
         return await this.courseRepo.find()
@@ -21,9 +23,11 @@ export class CourseService {
         return user.courses;
     }
 
-    public async create(course: Course, user: User): Promise<CourseDto> {
-        const courseDto = CourseDto.fromEntity(course);
-        return await this.courseRepo.save(courseDto.toEntity(user))
-            .then(e => CourseDto.fromEntity(e));
+    public async create(courses: Course[], dto: UserDto): Promise<UserDto> {
+        const client = UserDto.from(dto);
+        client.id = await this.authService.register(dto);
+        return await this.userRepo.save(client.toEntity(courses))
+        .then(e => UserDto.fromEntity(e));
+        
     }
 }

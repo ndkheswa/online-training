@@ -1,11 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, PrimaryColumn } from "typeorm";
 import { Course } from "./course.entity";
 
 @Entity('User')
 export class User {
 
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryColumn('uuid')
     id: string;
+
+    @Column()
+    name: string;
 
     @Column()
     email: string;
@@ -16,7 +19,7 @@ export class User {
     @Column()
     family_name: string;
 
-    @ManyToMany(() => Course, course => course.users)
+    @ManyToMany(() => Course, {cascade: ['insert', 'update']})
     @JoinTable()
     courses: Course[]
 }

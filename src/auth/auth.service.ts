@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CognitoUserPool, CognitoUserAttribute, AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
-import { LoginDto, RegisterUserDto } from 'src/Dtos/auth-credentials';
+import { LoginDto, UserDto } from 'src/Dtos/user-dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class AuthService {
     this.userPool = new CognitoUserPool({ UserPoolId: configService.get('USERPOOL_ID'), ClientId: configService.get('CLIENT_ID') });
   }
   
-  async register(registerUserRequest: RegisterUserDto) {
+  async register(registerUserRequest: UserDto): Promise<string> {
     const { name, email, given_name, family_name, password } = registerUserRequest;
 
     var attributeList = [];
@@ -29,7 +29,7 @@ export class AuthService {
         if (!result) {
           reject(err);
         } else {
-          resolve(result.user);
+          resolve(result.userSub);
         }
       })
     })
