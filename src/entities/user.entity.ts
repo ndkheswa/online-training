@@ -19,7 +19,7 @@ export class User {
     @Column()
     family_name: string;
 
-    @ManyToMany(() => Course, {cascade: ['insert', 'update']})
     @JoinTable()
-    courses: Course[]
+    @ManyToMany(() => Course, course => course.users, {cascade: ['insert', 'update']})
+    courses: Course[];
 }

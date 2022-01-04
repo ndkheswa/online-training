@@ -63,8 +63,8 @@ export class UserDto {
 
 export class LoginDto {
 
-    password: string;
-
     @IsString()
     name: string;
+    
+    password: string;
 }
