@@ -20,7 +20,7 @@ export class CourseService {
 
     public async getUserCourses(userId: string): Promise<CourseDto> {
         const user =  await this.userRepo.findOne({ where: {id: userId}, relations: ['courses']});
-        return CourseDto.fromEntity(user.courses[0]);
+        return CourseDto.fromEntity(user.courses[2]);
     }
 
     findUser(id: any): Promise<User> {
@@ -41,7 +41,7 @@ export class CourseService {
         return user;
     }
 
-    public async create(courses: Course[], dto: UserDto): Promise<UserDto> {
+    public async create(dto: UserDto): Promise<UserDto> {
         const user = await this.findUserByEmail(dto.email);
 
         if (user !== undefined) {
@@ -50,12 +50,29 @@ export class CourseService {
 
         const client = UserDto.from(dto);           // creating a dto object
         client.id = await this.authService.register(dto);
-        return await this.userRepo.save(client.toEntity(courses))
+        return await this.userRepo.save(client)
         .then(e => UserDto.fromEntity(e));
         
     }
 
-    updateCourse(id: string) {
+    public async createCourse(dto: CourseDto) {
+        const course = CourseDto.from(dto);
+        return await this.courseRepo.save(course)
+        .then(e => CourseDto.fromEntity(e));
+    }
 
+    public async updateCourse(id: string, course: Course) {
+        const user = await this.userRepo.findOneOrFail(id, { relations: ['courses']});
+        user.courses.push(course);
+        //const dto = UserDto.fromEntity(user)
+        return await this.userRepo.save(user);
+        //.then(e => UserDto.fromEntity(e));
+    }
+
+    public async assignCourse(userId: string, courseId: string) {
+        const user = await this.userRepo.findOneOrFail(userId, { relations: ['courses']});
+        const course = await this.courseRepo.findOneOrFail(courseId);
+        user.courses.push(course);
+        return await this.userRepo.save(user);
     }
 }

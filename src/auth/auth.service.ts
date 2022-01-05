@@ -11,8 +11,8 @@ export class AuthService {
     this.userPool = new CognitoUserPool({ UserPoolId: configService.get('USERPOOL_ID'), ClientId: configService.get('CLIENT_ID') });
   }
   
-  async register(registerUserRequest: UserDto): Promise<string> {
-    const { name, email, given_name, family_name, password } = registerUserRequest;
+  async register(dto: UserDto): Promise<string> {
+    const { username, email, given_name, family_name, password } = dto;
 
     var attributeList = [];
 
@@ -25,7 +25,7 @@ export class AuthService {
     attributeList.push(family_nameAttr);
 
     return new Promise((resolve, reject) => {
-      return this.userPool.signUp(name, password, attributeList, null, (err, result) => {
+      return this.userPool.signUp(username, password, attributeList, null, (err, result) => {
         if (!result) {
           reject(err);
         } else {

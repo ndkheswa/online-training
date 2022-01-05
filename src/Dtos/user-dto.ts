@@ -11,7 +11,7 @@ export class UserDto {
     id: string;
 
     @IsString()
-    name: string;
+    username: string;
 
     @IsEmail()
     email: string;
@@ -31,7 +31,7 @@ export class UserDto {
     public static from(dto: Partial<UserDto>) {
         const it = new UserDto();
         it.id = dto.id;
-        it.name = dto.name;
+        it.username = dto.username;
         it.email = dto.email;
         it.given_name = dto.given_name;
         it.family_name = dto.family_name;
@@ -52,11 +52,11 @@ export class UserDto {
     public toEntity(courses: Course[] = null) {
         const it = new User();
         it.id = this.id;
-        it.name = this.name;
+        it.username = this.username;
         it.email = this.email;
         it.given_name = this.given_name;
         it.family_name = this.family_name;
-        it.courses = this.courses;
+        it.courses = courses;
         return it;
     }
 }

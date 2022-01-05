@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put } from '@nestjs/common';
 import { CourseDto } from 'src/Dtos/course-dto';
 import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
@@ -50,8 +50,23 @@ export class CourseController {
     }
 
     @Post()
-    public async create(@Body() courses: Course[], @Body() user: UserDto): Promise<UserDto> {
-        return await this.courseService.create(courses, user);
+    public async create(@Body() user: UserDto): Promise<UserDto> {
+        return await this.courseService.create(user);
+    }
+
+    @Post('course')
+    public async createCourse(@Body() dto: CourseDto) {
+        return await this.courseService.createCourse(dto);
+    }
+
+    @Patch('update/:id')
+    public async updateCourse(@Param('id') id: string, @Body() course: Course) {
+        return await this.courseService.updateCourse(id, course);
+    }
+
+    @Patch('updateCourse')
+    public async assignCourse(userId: string, courseId: string) {
+        return await this.courseService.assignCourse(userId, courseId);
     }
 
 }
