@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Req } from '@nestjs/common';
 import { CourseDto } from 'src/Dtos/course-dto';
 import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
 import { User } from 'src/entities/user.entity';
 import { CourseService } from './course.service';
+import { Request } from 'express';
 
 @Controller('user')
 export class CourseController {
@@ -40,6 +41,11 @@ export class CourseController {
         return user
     }
 
+    @Get('course/:id')
+    public async findCourse(@Param('id') id: string) {
+        return await this.courseService.findCourse(id);
+    }
+
     @Get('email/:email')
     public async findUserByEmail(@Param('email') email: string): Promise<User> {
         const user = await this.courseService.findUserByEmail(email);
@@ -64,9 +70,9 @@ export class CourseController {
         return await this.courseService.updateCourse(id, course);
     }
 
-    @Patch('updateCourse')
-    public async assignCourse(userId: string, courseId: string) {
-        return await this.courseService.assignCourse(userId, courseId);
+    @Post('assignCourse')
+    public async assignCourse(@Req() req: Request) {
+        return await this.courseService.assignCourse(req.body.userId, req.body.courseId);
     }
 
 }
