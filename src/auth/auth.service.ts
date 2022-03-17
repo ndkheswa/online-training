@@ -1,17 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CognitoUserPool, CognitoUserAttribute, AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
 import { LoginDto, UserDto } from 'src/Dtos/user-dto';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
     private userPool: CognitoUserPool;
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService, @InjectRepository(User) private readonly userRepo: Repository<User>) {
     this.userPool = new CognitoUserPool({ UserPoolId: configService.get('USERPOOL_ID'), ClientId: configService.get('CLIENT_ID') });
   }
+
+  public async create(dto: UserDto): Promise<UserDto> {
+    const user = await this.findUserByEmail(dto.email);
+
+    if (user !== undefined) {
+        throw new BadRequestException(`User with EMAIL: ${user.email} already exists!`);
+    }
+
+    const client = UserDto.from(dto);           // creating a dto object
+    client.id = await this.register(dto);
+    return await this.userRepo.save(client)
+    .then(e => UserDto.fromEntity(e)); 
+  }
   
-  async register(dto: UserDto): Promise<string> {
+  private async register(dto: UserDto): Promise<string> {
     const { username, email, given_name, family_name, password } = dto;
 
     var attributeList = [];
@@ -58,4 +74,22 @@ export class AuthService {
       })
     });
   }
+
+  findUser(id: any): Promise<User> {
+    const user = this.userRepo.findOne(id);
+
+    if (user === undefined) {
+        throw new NotFoundException(`User with ID: ${id} not found!`);
+    }
+    return user;
+}
+
+public async findUserByEmail(email: string): Promise<User> {
+    const user = this.userRepo.findOne({ where: {email: email }});
+    if (user === undefined) {
+        throw new NotFoundException(`User with EMAIL: ${email} not found!`);
+    }
+
+    return user;
+}
 }

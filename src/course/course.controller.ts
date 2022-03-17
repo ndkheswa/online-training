@@ -31,34 +31,21 @@ export class CourseController {
         return await this.courseService.getUserCourses(id);
     }
 
-    @Get(':id')
-    public async findUser(@Param('id')  id: string): Promise<User> {
-        const user = await this.courseService.findUser(id);
-
-        if (user === undefined) {
-            throw new HttpException('NotFound', HttpStatus.NOT_FOUND);
-        }
-        return user
-    }
-
     @Get('course/:id')
     public async findCourse(@Param('id') id: string) {
         return await this.courseService.findCourse(id);
     }
 
-    @Get('email/:email')
-    public async findUserByEmail(@Param('email') email: string): Promise<User> {
-        const user = await this.courseService.findUserByEmail(email);
-        if (user === undefined) {
-            throw new HttpException('NotFound', HttpStatus.NOT_FOUND);
-        }
-        return user;
-    }
+    
 
-    @Post()
+    /**
+     * 
+     * @param dto @Post()
     public async create(@Body() user: UserDto): Promise<UserDto> {
         return await this.courseService.create(user);
     }
+     * @returns 
+     */
 
     @Post('course')
     public async createCourse(@Body() dto: CourseDto) {

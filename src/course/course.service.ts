@@ -36,38 +36,6 @@ export class CourseService {
         return dto;
     }
 
-    findUser(id: any): Promise<User> {
-        const user = this.userRepo.findOne(id);
-
-        if (user === undefined) {
-            throw new NotFoundException(`User with ID: ${id} not found!`);
-        }
-        return user;
-    }
-
-    public async findUserByEmail(email: string): Promise<User> {
-        const user = this.userRepo.findOne({ where: {email: email }});
-        if (user === undefined) {
-            throw new NotFoundException(`User with EMAIL: ${email} not found!`);
-        }
-
-        return user;
-    }
-
-    public async create(dto: UserDto): Promise<UserDto> {
-        const user = await this.findUserByEmail(dto.email);
-
-        if (user !== undefined) {
-            throw new BadRequestException(`User with EMAIL: ${user.email} already exists!`);
-        }
-
-        const client = UserDto.from(dto);           // creating a dto object
-        client.id = await this.authService.register(dto);
-        return await this.userRepo.save(client)
-        .then(e => UserDto.fromEntity(e));
-        
-    }
-
     public async createCourse(dto: CourseDto) {
         const course = CourseDto.from(dto);
         return await this.courseRepo.save(course)
