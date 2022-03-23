@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class CourseService {
     
-    constructor(@InjectRepository(Course) private readonly courseRepo: Repository<Course>, 
+    constructor(@InjectRepository(Course) private readonly courseRepo: Repository<Course>,
         @InjectRepository(User) private readonly userRepo: Repository<User>, private authService: AuthService) {}
 
     public async getAll(): Promise<CourseDto[]> {
@@ -50,10 +50,26 @@ export class CourseService {
         //.then(e => UserDto.fromEntity(e));
     }
 
-    public async assignCourse(userId: string, courseId: string) {
+    public async assignCourse(userId: string, courseId: string): Promise<User> {
         const user = await this.userRepo.findOneOrFail(userId, { relations: ['courses']});
+
+        if (user === undefined) {
+            throw new NotFoundException(`User with ID: ${userId} not found!`);
+        }
+
         const course = await this.courseRepo.findOneOrFail(courseId);
+        if (course === undefined) {
+            throw new NotFoundException(`Course with ID: ${courseId} not found!`);
+        }
+
+        const assignedCourse = user.courses.find(found => found.id == course.id );
+
+        if (assignedCourse !== undefined) {
+            throw new BadRequestException(`You're already enrolled for this course: ${assignedCourse.name}`);
+        } 
+
         user.courses.push(course);
         return await this.userRepo.save(user);
+        
     }
 }

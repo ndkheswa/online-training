@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Req } from '@nestjs/common';
 import { CourseDto } from 'src/Dtos/course-dto';
 import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
@@ -59,7 +59,11 @@ export class CourseController {
 
     @Post('assignCourse')
     public async assignCourse(@Req() req: Request) {
-        return await this.courseService.assignCourse(req.body.userId, req.body.courseId);
+        try {
+            return await this.courseService.assignCourse(req.body.userId, req.body.courseId);
+        } catch (e) {
+            throw new BadRequestException(e.message);
+        }
     }
 
 }

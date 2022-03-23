@@ -82,14 +82,14 @@ export class AuthService {
         throw new NotFoundException(`User with ID: ${id} not found!`);
     }
     return user;
-}
+  }
 
-public async findUserByEmail(email: string): Promise<User> {
+  public async findUserByEmail(email: string): Promise<User> {
     const user = this.userRepo.findOne({ where: {email: email }});
     if (user === undefined) {
         throw new NotFoundException(`User with EMAIL: ${email} not found!`);
     }
 
     return user;
-}
+  }
 }
