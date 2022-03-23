@@ -17,6 +17,9 @@ export class UserDto {
     email: string;
 
     @IsString()
+    user_role: string;
+
+    @IsString()
     password: string;
 
     @IsString()
@@ -33,6 +36,7 @@ export class UserDto {
         it.id = dto.id;
         it.username = dto.username;
         it.email = dto.email;
+        it.user_role = dto.user_role;
         it.given_name = dto.given_name;
         it.family_name = dto.family_name;
         it.courses = dto.courses;
@@ -43,6 +47,7 @@ export class UserDto {
         return this.from({
             id: entity.id,
             email: entity.email,
+            user_role: entity.user_role,
             given_name: entity.given_name,
             family_name: entity.family_name,
             courses: entity.courses
@@ -54,6 +59,7 @@ export class UserDto {
         it.id = this.id;
         it.username = this.username;
         it.email = this.email;
+        it.user_role = this.user_role;
         it.given_name = this.given_name;
         it.family_name = this.family_name;
         it.courses = courses;
@@ -62,9 +68,8 @@ export class UserDto {
 }
 
 export class LoginDto {
-
     @IsString()
-    name: string;
-    
+
+    name: string; 
     password: string;
 }

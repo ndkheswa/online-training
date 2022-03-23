@@ -28,15 +28,17 @@ export class AuthService {
   }
   
   private async register(dto: UserDto): Promise<string> {
-    const { username, email, given_name, family_name, password } = dto;
+    const { username, email, user_role, given_name, family_name, password } = dto;
 
     var attributeList = [];
 
     var emailAttr = new CognitoUserAttribute({ Name: 'email', Value: email });
+    var roleAttr = new CognitoUserAttribute({ Name: 'custom:user_role', Value: user_role });
     var given_nameAttr = new CognitoUserAttribute({ Name: 'given_name', Value: given_name });
     var family_nameAttr = new CognitoUserAttribute({ Name: 'family_name', Value: family_name });
 
     attributeList.push(emailAttr);
+    attributeList.push(roleAttr);
     attributeList.push(given_nameAttr);
     attributeList.push(family_nameAttr);
 
