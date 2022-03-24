@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
-import { Enrollment } from './enrollment.entity';
+import { Section } from './section.entity';
 import { User } from './user.entity';
 
 @Entity('course')
@@ -20,6 +20,6 @@ export class Course {
     @ManyToMany(() => User, user => user.courses, {cascade: ['insert', 'update']})
     users: User[];
 
-    @OneToMany(() => Enrollment, enrollment => enrollment.course)
-    enrollments: Enrollment[]
+    @OneToMany(() => Section, section => section.course)
+    sections: Section[];
 }

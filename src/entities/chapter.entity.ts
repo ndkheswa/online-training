@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Section } from "./section";
+import { Section } from "./section.entity";
 
 @Entity('chapter')
 export class Chapter {
@@ -11,6 +11,9 @@ export class Chapter {
 
     @Column()
     duration: string;
+
+    @Column()
+    url: string;
 
     @ManyToOne(() => Section, section => section.chapters)
     section: Section;
