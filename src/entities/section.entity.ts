@@ -11,7 +11,7 @@ export class Section {
     @Column()
     title: string;
 
-    @OneToMany(() => Chapter, chapter => chapter.section)
+    @OneToMany(() => Chapter, chapter => chapter.section, {cascade: ['insert', 'update']})
     chapters: Chapter[];
 
     @ManyToOne(() => Course, course => course.sections)
