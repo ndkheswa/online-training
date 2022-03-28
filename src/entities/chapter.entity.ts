@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { PublicFile } from "./public-file.entity";
 import { Section } from "./section.entity";
 
 @Entity('chapter')
@@ -12,8 +13,9 @@ export class Chapter {
     @Column()
     duration: string;
 
-    @Column()
-    url: string;
+    @JoinColumn()
+    @OneToOne(() => PublicFile, { eager: true, nullable: true })
+    public file?: PublicFile;
 
     @ManyToOne(() => Section, section => section.chapters)
     section: Section;
