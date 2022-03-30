@@ -4,6 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CourseDto } from 'src/Dtos/course-dto';
 import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
+import { Section } from 'src/entities/section.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -36,7 +37,7 @@ export class CourseService {
         return dto;
     }
 
-    public async getCourseChapters(courseId: string) {
+    public async getCourseSections(courseId: string) {
         const course = await this.courseRepo.findOne({ where: {id: courseId}, relations: ['sections']});
 
         if (course === undefined) {
@@ -58,6 +59,14 @@ export class CourseService {
         //const dto = UserDto.fromEntity(user)
         return await this.userRepo.save(user);
         //.then(e => UserDto.fromEntity(e));
+    }
+
+    public async updateSection(id: string, section: Section) {
+        const course = await this.courseRepo.findOneOrFail(id, { relations: ['sections']});
+        course.sections.push(section);
+        //const dto = CourseDto.fromEntity(course)
+        return await this.courseRepo.save(course);
+        //.then(e => CourseDto.fromEntity(e));
     }
 
     public async assignCourse(userId: string, courseId: string): Promise<User> {
