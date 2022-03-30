@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chapter } from 'src/entities/chapter.entity';
+import { S3Service } from 'src/services/s3/s3.service';
 import { Repository } from 'typeorm';
-import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class ChapterService {

@@ -1,5 +1,6 @@
-import { IsUUID, IsString } from 'class-validator';
+import { IsUUID, IsString, IsArray } from 'class-validator';
 import { Course } from 'src/entities/course.entity';
+import { Section } from 'src/entities/section.entity';
 import { User } from 'src/entities/user.entity';
 
 export class CourseDto implements Readonly<CourseDto> {
@@ -16,12 +17,16 @@ export class CourseDto implements Readonly<CourseDto> {
     @IsString()
     status: string;
 
+    @IsArray()
+    sections: Section[];
+
     public static from(dto: Partial<CourseDto>) {
         const it = new CourseDto();
         it.id = dto.id;
         it.name = dto.name;
         it.description = dto.description;
         it.status = dto.status;
+        it.sections = dto.sections;
         return it;
     }
 
@@ -30,7 +35,8 @@ export class CourseDto implements Readonly<CourseDto> {
             id: entity.id,
             name: entity.name,
             description: entity.description,
-            status: entity.status
+            status: entity.status,
+            sections: entity.sections
         })
     }
 

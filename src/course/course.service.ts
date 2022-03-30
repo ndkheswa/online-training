@@ -24,7 +24,7 @@ export class CourseService {
 
     public async getUserCourses(userId: string): Promise<CourseDto[]> {
 
-        const user =  await this.userRepo.findOne({ where: {id: userId}, relations: ['courses']});
+        const user =  await this.userRepo.findOne({ where: {id: userId}, relations: ['courses', 'courses.sections', 'courses.sections.chapters']});
         if (user === undefined) {
             throw new NotFoundException(`User with ID: ${userId} not found!`);
         }
@@ -34,6 +34,16 @@ export class CourseService {
             dto.push(CourseDto.fromEntity(user.courses[i]));
         }
         return dto;
+    }
+
+    public async getCourseChapters(courseId: string) {
+        const course = await this.courseRepo.findOne({ where: {id: courseId}, relations: ['sections']});
+
+        if (course === undefined) {
+            throw new NotFoundException(`Course with ID: ${courseId} not found!`);
+        }
+
+        return course;
     }
 
     public async createCourse(dto: CourseDto) {

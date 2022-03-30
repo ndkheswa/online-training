@@ -36,8 +36,6 @@ export class CourseController {
         return await this.courseService.findCourse(id);
     }
 
-    
-
     /**
      * 
      * @param dto @Post()
@@ -65,5 +63,12 @@ export class CourseController {
             throw new BadRequestException(e.message);
         }
     }
+
+    @Get('chapter/:id')
+    public async findChapter(@Param('id') id: string) {
+        return await this.courseService.getCourseChapters(id);
+    }
+
+
 
 }
