@@ -56,9 +56,9 @@ export class CourseController {
         return await this.courseService.updateCourse(id, course);
     }
 
-    @Patch('update/section/:id')
-    public async updateSection(@Param('id') id: string, @Body() section: Section) {
-        return await this.courseService.updateSection(id, section);
+    @Post('create/section/:id')
+    public async createSection(@Param('id') sectionId: string, @Body() section: Section) {
+        return await this.courseService.createSection(sectionId, section);
     }
 
     @Post('assign/user')

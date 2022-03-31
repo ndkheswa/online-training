@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 export class CourseService {
     
     constructor(@InjectRepository(Course) private readonly courseRepo: Repository<Course>,
+    @InjectRepository(Section) private readonly sectionRepo: Repository<Section>,
         @InjectRepository(User) private readonly userRepo: Repository<User>, private authService: AuthService) {}
 
     public async getAll(): Promise<CourseDto[]> {
@@ -61,8 +62,13 @@ export class CourseService {
         //.then(e => UserDto.fromEntity(e));
     }
 
-    public async updateSection(id: string, section: Section) {
-        const course = await this.courseRepo.findOneOrFail(id, { relations: ['sections']});
+    public async createSection(courseId: string, section: Section) {
+        const course = await this.courseRepo.findOneOrFail(courseId, { relations: ['sections']});
+
+        if (course === undefined) {
+            throw new NotFoundException(`Course with ID: ${courseId} not found!`);
+        }
+
         course.sections.push(section);
         //const dto = CourseDto.fromEntity(course)
         return await this.courseRepo.save(course);
