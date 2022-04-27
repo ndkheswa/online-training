@@ -1,9 +1,10 @@
-import { Body, Controller, Param, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Param, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/services/s3/s3.service';
 import { ChapterService } from './chapter.service';
 import { Chapter } from 'src/entities/chapter.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('chapter')
 export class ChapterController {
@@ -11,12 +12,16 @@ export class ChapterController {
                 private readonly chaperService: ChapterService) {}
 
     @Post('upload')
+    @UseGuards(AuthGuard('jwt'))
     @UseInterceptors(FileInterceptor('file'))
     async create(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
-        return this.chaperService.addFile(req.body.chapterId, file.buffer, file.originalname);
+        console.log(file)
+        return file
+        // return this.chaperService.addFile(req.body.chapterId, file.buffer, file.originalname );
     }
 
     @Post('create/:id')
+    @UseGuards(AuthGuard('jwt'))
     async createChapter(@Param('id') sectionId: number, chapter: Chapter) {
         return await this.chaperService.createChapter(sectionId, chapter);
     }

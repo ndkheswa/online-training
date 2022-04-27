@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chapter } from 'src/entities/chapter.entity';
+import { Course } from 'src/entities/course.entity';
 import { Section } from 'src/entities/section.entity';
 import { S3Service } from 'src/services/s3/s3.service';
 import { Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import { Repository } from 'typeorm';
 export class ChapterService {
 
     constructor(@InjectRepository(Chapter) private chapterRepo: Repository<Chapter>,
+                    @InjectRepository(Course) private courseRepo: Repository<Course>,
                     @InjectRepository(Section) private sectionRepo: Repository<Section>,
                     private readonly fileService: S3Service) {}
 

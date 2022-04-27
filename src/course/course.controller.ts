@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CourseDto } from 'src/Dtos/course-dto';
 import { UserDto } from 'src/Dtos/user-dto';
 import { Course } from 'src/entities/course.entity';
@@ -6,6 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { CourseService } from './course.service';
 import { Request } from 'express';
 import { Section } from 'src/entities/section.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('course')
 export class CourseController {
@@ -13,6 +14,7 @@ export class CourseController {
     constructor(private courseService: CourseService) {}
     
     @Get()
+    @UseGuards(AuthGuard('jwt'))
     public async getAll(): Promise<CourseDto[]> {
         return await this.courseService.getAll();
     }
@@ -28,11 +30,13 @@ export class CourseController {
      */
 
     @Get('user/:id')
+    // @UseGuards(AuthGuard('jwt'))
     public async geUserCourses(@Param('id') id: string) {
         return await this.courseService.getUserCourses(id);
     }
 
     @Get(':id')
+    // @UseGuards(AuthGuard('jwt'))
     public async findCourse(@Param('id') id: string) {
         return await this.courseService.findCourse(id);
     }
@@ -47,21 +51,25 @@ export class CourseController {
      */
 
     @Post()
+    @UseGuards(AuthGuard('jwt'))
     public async createCourse(@Body() dto: CourseDto) {
         return await this.courseService.createCourse(dto);
     }
 
     @Patch('update/:id')
+    @UseGuards(AuthGuard('jwt'))
     public async updateCourse(@Param('id') id: string, @Body() course: Course) {
         return await this.courseService.updateCourse(id, course);
     }
 
     @Post('create/section/:id')
-    public async createSection(@Param('id') sectionId: string, @Body() section: Section) {
-        return await this.courseService.createSection(sectionId, section);
+    @UseGuards(AuthGuard('jwt'))
+    public async createSection(@Param('id') courseId: string, @Body() section: Section) {
+        return await this.courseService.createSection(courseId, section);
     }
 
     @Post('assign/user')
+    @UseGuards(AuthGuard('jwt'))
     public async assignCourse(@Req() req: Request) {
         try {
             return await this.courseService.assignCourse(req.body.userId, req.body.courseId);
@@ -71,10 +79,8 @@ export class CourseController {
     }
 
     @Get('chapter/:id')
+    @UseGuards(AuthGuard('jwt'))
     public async findChapter(@Param('id') id: string) {
         return await this.courseService.getCourseSections(id);
     }
-
-
-
 }

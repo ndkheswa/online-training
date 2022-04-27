@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CognitoUserPool, CognitoUserAttribute, AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
+import { CognitoUserPool, CognitoUserAttribute, AuthenticationDetails, CognitoUser, CognitoAccessToken, CognitoIdToken, CognitoRefreshToken, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { LoginDto, UserDto } from 'src/Dtos/user-dto';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -87,11 +87,17 @@ export class AuthService {
   }
 
   public async findUserByEmail(email: string): Promise<User> {
+
+
     const user = this.userRepo.findOne({ where: {email: email }});
     if (user === undefined) {
         throw new NotFoundException(`User with EMAIL: ${email} not found!`);
     }
 
     return user;
+
+
+ 
   }
+
 }
