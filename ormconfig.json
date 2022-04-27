@@ -1,0 +1,19 @@
+{
+  "type": "postgres",
+  "host": "127.0.0.1",
+  "port": 5432,
+  "username": "postgres",
+  "password": "dbAdmin",
+  "database": "online-training",
+  "entities": [
+    "/home/leslo_360/Freeelance/online-training/src/entities/*.entity{.ts,.js}"
+  ],
+  "migrationsTableName": "migration",
+  "migrations": [
+    "/home/leslo_360/Freeelance/online-training/src/migration/*.ts"
+  ],
+  "cli": {
+    "migrationsDir": "/home/leslo_360/Freeelance/online-training/src/migration"
+  },
+  "ssl": false
+}
