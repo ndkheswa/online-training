@@ -6,7 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { CourseService } from './course.service';
 import { Request } from 'express';
 
-@Controller('user')
+@Controller('course')
 export class CourseController {
 
     constructor(private courseService: CourseService) {}
@@ -26,17 +26,15 @@ export class CourseController {
      * @returns 
      */
 
-    @Get('courses/:id')
+    @Get('user/:id')
     public async geUserCourses(@Param('id') id: string) {
         return await this.courseService.getUserCourses(id);
     }
 
-    @Get('course/:id')
+    @Get(':id')
     public async findCourse(@Param('id') id: string) {
         return await this.courseService.findCourse(id);
     }
-
-    
 
     /**
      * 
@@ -47,7 +45,7 @@ export class CourseController {
      * @returns 
      */
 
-    @Post('course')
+    @Post()
     public async createCourse(@Body() dto: CourseDto) {
         return await this.courseService.createCourse(dto);
     }
@@ -57,7 +55,7 @@ export class CourseController {
         return await this.courseService.updateCourse(id, course);
     }
 
-    @Post('assignCourse')
+    @Post('assign')
     public async assignCourse(@Req() req: Request) {
         return await this.courseService.assignCourse(req.body.userId, req.body.courseId);
     }
