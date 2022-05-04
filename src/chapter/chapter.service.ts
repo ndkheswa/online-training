@@ -25,7 +25,7 @@ export class ChapterService {
     }
 
     async getById(id: string) {
-        const chapter = await this.chapterRepo.findOne({ id });
+        const chapter = await this.chapterRepo.findOne(id);
         if (chapter) {
             return chapter;
         }
@@ -42,6 +42,7 @@ export class ChapterService {
         section.chapters.push(chapter);
         //const dto = CourseDto.fromEntity(course)
         return await this.sectionRepo.save(section);
+
         //.then(e => CourseDto.fromEntity(e));
     }
 }

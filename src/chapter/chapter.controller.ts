@@ -8,17 +8,18 @@ import { Chapter } from 'src/entities/chapter.entity';
 @Controller('chapter')
 export class ChapterController {
     constructor(private readonly s3Service: S3Service,
-                private readonly chaperService: ChapterService) {}
+                private readonly chapterService: ChapterService) {}
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     async create(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
-        return this.chaperService.addFile(req.body.chapterId, file.buffer, file.originalname);
+        return this.chapterService.addFile(req.body.chapterId, file.buffer, file.originalname);
     }
 
     @Post('create/:id')
-    async createChapter(@Param('id') sectionId: number, chapter: Chapter) {
-        return await this.chaperService.createChapter(sectionId, chapter);
+    @UseInterceptors(FileInterceptor('file'))
+    async createChapter(@Param('id') sectionId: number, @Body() chapter: Chapter) {
+        return this.chapterService.createChapter(sectionId, chapter);
     }
 }
 
